@@ -10,8 +10,8 @@ services:
       - TZ=Etc/UTC
     volumes:
       - ${CONFIG_PATH}:/sonarr_config
-      - ${DATA_PATH}:/tv #optional
-      - ${DATA_PATH}:/downloads #optional
+      - ${DATA_PATH}:/tv
+      - ${DATA_PATH}:/downloads
     ports:
       - 8989:8989
     restart: unless-stopped
@@ -27,8 +27,8 @@ services:
       - TZ=Etc/UTC
     volumes:
       - ${CONFIG_PATH}:/radarr_config
-      - ${DATA_PATH}:/movies #optional
-      - ${DATA_PATH}:/downloads #optional
+      - ${DATA_PATH}:/movies
+      - ${DATA_PATH}:/downloads
     ports:
       - 7878:7878
     restart: unless-stopped
@@ -57,7 +57,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Etc/UTC
-      - DELUGE_LOGLEVEL=error #optional
+      - DELUGE_LOGLEVEL=error
     volumes:
       - ${CONFIG_PATH}:/deluge_config
       - ${DATA_PATH}:/downloads
