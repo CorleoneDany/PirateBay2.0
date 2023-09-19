@@ -80,9 +80,9 @@ services:
       - VERSION=docker
       - PLEX_CLAIM= #optional
     volumes:
-      - /path/to/library:/config
-      - /path/to/tvseries:/tv
-      - /path/to/movies:/movies
+      - ${CONFIG_PATH}/plex_config:/plex_config
+      - ${DATA_PATH}/tv:/tv
+      - ${DATA_PATH}/movies:/movies
     restart: unless-stopped
     networks:
       - local_network
