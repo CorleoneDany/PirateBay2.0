@@ -9,7 +9,7 @@ services:
       - PGID=1000
       - TZ=Etc/UTC
     volumes:
-      - ${CONFIG_PATH}:/sonarr_config
+      - ${CONFIG_PATH}/sonarr_config:/sonarr_config
       - ${DATA_PATH}/tv:/tv
       - ${DATA_PATH}/downloads:/downloads
     ports:
@@ -26,7 +26,7 @@ services:
       - PGID=1000
       - TZ=Etc/UTC
     volumes:
-      - ${CONFIG_PATH}:/radarr_config
+      - ${CONFIG_PATH}/radarr_config:/radarr_config
       - ${DATA_PATH}/movies:/movies
       - ${DATA_PATH}/downloads:/downloads
     ports:
@@ -43,7 +43,7 @@ services:
       - PGID=1000
       - TZ=Etc/UTC
     volumes:
-      - ${CONFIG_PATH}:/prowlarr_config
+      - ${CONFIG_PATH}/prowlarr_config:/prowlarr_config
     ports:
       - 9696:9696
     restart: unless-stopped
@@ -59,12 +59,30 @@ services:
       - TZ=Etc/UTC
       - DELUGE_LOGLEVEL=error
     volumes:
-      - ${CONFIG_PATH}:/deluge_config
+      - ${CONFIG_PATH}/deluge_config:/deluge_config
       - ${DATA_PATH}/downloads:/downloads
     ports:
       - 8112:8112
       - 6881:6881
       - 6881:6881/udp
+    restart: unless-stopped
+    networks:
+      - local_network
+
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    network_mode: host
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - VERSION=docker
+      - PLEX_CLAIM= #optional
+    volumes:
+      - /path/to/library:/config
+      - /path/to/tvseries:/tv
+      - /path/to/movies:/movies
     restart: unless-stopped
     networks:
       - local_network
