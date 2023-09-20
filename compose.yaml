@@ -9,9 +9,9 @@ services:
       - PGID=1000
       - TZ=Etc/UTC
     volumes:
-      - ${CONFIG_PATH}/sonarr_config:/sonarr_config
-      - ${DATA_PATH}/tv:/tv
-      - ${DATA_PATH}/downloads:/downloads
+      - ${CONFIG_PATH}sonarr_config:/config
+      - ${DATA_PATH}tv:/tv
+      - ${DATA_PATH}downloads:/downloads
     ports:
       - 8989:8989
     restart: unless-stopped
@@ -26,9 +26,9 @@ services:
       - PGID=1000
       - TZ=Etc/UTC
     volumes:
-      - ${CONFIG_PATH}/radarr_config:/radarr_config
-      - ${DATA_PATH}/movies:/movies
-      - ${DATA_PATH}/downloads:/downloads
+      - ${CONFIG_PATH}radarr_config:/config
+      - ${DATA_PATH}movies:/movies
+      - ${DATA_PATH}downloads:/downloads
     ports:
       - 7878:7878
     restart: unless-stopped
@@ -43,7 +43,7 @@ services:
       - PGID=1000
       - TZ=Etc/UTC
     volumes:
-      - ${CONFIG_PATH}/prowlarr_config:/prowlarr_config
+      - ${CONFIG_PATH}prowlarr_config:/config
     ports:
       - 9696:9696
     restart: unless-stopped
@@ -51,20 +51,35 @@ services:
       - local_network
 
   deluge:
-    image: lscr.io/linuxserver/deluge:latest
+    image: binhex/arch-delugevpn
     container_name: deluge
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "8112:8112"
+      - "8118:8118"
+      - "58846:58846"
+      - "58946:58946"
+    volumes:
+      - ${CONFIG_PATH}deluge_config:/config
+      - ${DATA_PATH}downloads:/downloads
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Etc/UTC
-      - DELUGE_LOGLEVEL=error
-    volumes:
-      - ${CONFIG_PATH}/deluge_config:/deluge_config
-      - ${DATA_PATH}/downloads:/downloads
-    ports:
-      - 8112:8112
-      - 6881:6881
-      - 6881:6881/udp
+      - VPN_ENABLED=yes
+      - VPN_PROV=airvpn
+      - VPN_CLIENT=openvpn
+      - ENABLE_PRIVOXY=yes
+      - LAN_NETWORK=192.168.1.0/24
+      - NAME_SERVERS=84.200.69.80,37.235.1.174,1.1.1.1,37.235.1.177,84.200.70.40,1.0.0.1
+      - DELUGE_DAEMON_LOG_LEVEL=info
+      - DELUGE_WEB_LOG_LEVEL=info
+      - DELUGE_ENABLE_WEBUI_PASSWORD=yes
+      - DEBUG=false
+      - VPN_INPUT_PORTS=1234
+      - VPN_OUTPUT_PORTS=5678
+      - UMASK=000
     restart: unless-stopped
     networks:
       - local_network
@@ -72,7 +87,6 @@ services:
   plex:
     image: lscr.io/linuxserver/plex:latest
     container_name: plex
-    network_mode: host
     environment:
       - PUID=1000
       - PGID=1000
@@ -80,9 +94,9 @@ services:
       - VERSION=docker
       - PLEX_CLAIM= #optional
     volumes:
-      - ${CONFIG_PATH}/plex_config:/plex_config
-      - ${DATA_PATH}/tv:/tv
-      - ${DATA_PATH}/movies:/movies
+      - ${CONFIG_PATH}plex_config:/config
+      - ${DATA_PATH}tv:/tv
+      - ${DATA_PATH}movies:/movies
     restart: unless-stopped
     networks:
       - local_network
