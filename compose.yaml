@@ -77,8 +77,6 @@ services:
       - DELUGE_WEB_LOG_LEVEL=info
       - DELUGE_ENABLE_WEBUI_PASSWORD=yes
       - DEBUG=false
-      - VPN_INPUT_PORTS=11833
-      - VPN_OUTPUT_PORTS=15993
       - UMASK=000
     restart: unless-stopped
     networks:
